@@ -4,14 +4,12 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class TeamTest {
     @Nested
-    @Disabled
     @DisplayName("Ex 1d: When a team")
     inner class ValidatingTeamTest {
 
@@ -63,7 +61,6 @@ class TeamTest {
     }
 
     @Nested
-    @Disabled
     @DisplayName("Ex 1e: When a team has a captain")
     inner class CaptainTest {
         private val onePlayerPerPosition = Position.values().map { Player(it, it.ordinal + 1) } +
