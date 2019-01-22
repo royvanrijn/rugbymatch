@@ -1,6 +1,5 @@
 package com.paulienvanalst.rugbymatch.game
 
-import com.paulienvanalst.rugbymatch.team.NotImplementedException
 import com.paulienvanalst.rugbymatch.team.Team
 
 interface SetPiece {

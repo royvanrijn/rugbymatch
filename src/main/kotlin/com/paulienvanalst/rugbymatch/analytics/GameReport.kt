@@ -5,7 +5,6 @@ import com.paulienvanalst.rugbymatch.game.GameScore
 import com.paulienvanalst.rugbymatch.game.LineOut
 import com.paulienvanalst.rugbymatch.game.ScoringBoard
 import com.paulienvanalst.rugbymatch.game.Scrum
-import com.paulienvanalst.rugbymatch.team.NotImplementedException
 import com.paulienvanalst.rugbymatch.team.TeamName
 import org.apache.logging.log4j.LogManager
 import org.springframework.context.ApplicationEvent
@@ -37,8 +36,9 @@ open class GameReporter (val scoringBoard: ScoringBoard) {
 
     @EventListener
     fun updatingReportAfterSetPiece(setPieceEvent: SetPieceEvent) {
-        throw NotImplementedException()
+        gameReport.addSetPieceEvents(setPieceEvent)
     }
+
 
 }
 
@@ -55,7 +55,12 @@ class GameReport (val hostingTeam : TeamName, val visitingTeam : TeamName) {
 
 
     fun addSetPieceEvents(setPieceEvent: SetPieceEvent) {
-        throw NotImplementedException()
+        setPieceEvents += setPieceEvent
+
+        when(setPieceEvent) {
+            is LineOutWasPlayed -> lineOuts += setPieceEvent.lineOut
+            is ScrumWasPlayed -> scrums += setPieceEvent.scrum
+        }
 
     }
 

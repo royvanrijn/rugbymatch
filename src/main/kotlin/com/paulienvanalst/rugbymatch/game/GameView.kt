@@ -1,17 +1,20 @@
 package com.paulienvanalst.rugbymatch.game
 
+import com.paulienvanalst.rugbymatch.analytics.MailingService
 import com.paulienvanalst.rugbymatch.events.FinishGame
+import com.paulienvanalst.rugbymatch.events.ScoringEvent
 import com.paulienvanalst.rugbymatch.events.StartGame
-import com.paulienvanalst.rugbymatch.team.NotImplementedException
 import com.paulienvanalst.rugbymatch.team.TeamName
 import org.apache.logging.log4j.LogManager
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-open class GameController(val publisher : ApplicationEventPublisher) {
+open class GameController(val publisher : ApplicationEventPublisher, val mailingService: MailingService) {
+
+
+
     private val logger = LogManager.getLogger(GameController::class.java)
 
     @GetMapping("/")
@@ -31,10 +34,15 @@ open class GameController(val publisher : ApplicationEventPublisher) {
     }
 
     @GetMapping("/try")
-    fun tryToulon(): String {
+    fun tryToulon(): Response {
         logger.info("Publishing try event!")
 
-        throw NotImplementedException()
+        return try {
+            publisher.publishEvent(ScoringEvent(this, Type.TRY, TeamName.RC_TOULON))
+            Response(200, "A try was scored", null)
+        } catch(e: RuntimeException) {
+            Response(500, "Oops an error occurred ${e.message}", null)
+        }
     }
 
     @GetMapping("/end-game")
@@ -42,7 +50,7 @@ open class GameController(val publisher : ApplicationEventPublisher) {
         logger.info("Publishing event!")
         return try {
             publisher.publishEvent(FinishGame(this))
-            Response(200, "The Game was stopped", ScoringBoard())
+            Response(200, "The Game was stopped", mailingService.mailToSend)
         } catch(e: RuntimeException) {
             Response(500, "Oops an error occurred ${e.message}", null)
         }
